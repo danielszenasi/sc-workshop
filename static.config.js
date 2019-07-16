@@ -5,6 +5,12 @@ const matter = require('gray-matter');
 const remark = require('remark');
 const recommended = require('remark-preset-lint-recommended');
 const html = require('remark-html');
+const React = require('react');
+const axios = require('axios');
+const _ = require('lodash');
+const slugify = require('slugify');
+import querystring from 'query-string';
+import { makePageRoutes } from 'react-static/node';
 
 function getPosts() {
   const items = [];
@@ -60,7 +66,53 @@ function getPosts() {
 }
 
 export default {
+  Document: ({ Html, Head, Body, children, state: { siteData, renderMeta } }) => (
+    <Html lang="en-US">
+      <Head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        />
+      </Head>
+
+      <Body>{children}</Body>
+    </Html>
+  ),
   getRoutes: async () => {
+    let maxPages = 10;
+    let currentPage = 1;
+    let listingsCamelCase = [];
+    while (currentPage <= maxPages + 1) {
+      const params = {
+        apikey: process.env.RLS_API,
+        page: currentPage,
+        limit: 20,
+        order: 'date',
+        sort: 'desc',
+        includeContacts: true,
+        status: `1`
+      };
+      const query = querystring.stringify(params);
+      const response = await axios.get(`http://dataapi.realtymx.com/listings/?${query}`);
+
+      const { LISTINGS, TOTAL_COUNT } = response.data;
+
+      listingsCamelCase = listingsCamelCase.concat(
+        LISTINGS.map(l => _.mapKeys(l, (v, k) => _.camelCase(k))).map(li => ({
+          ...li,
+          slug: slugify(li.address)
+        }))
+      );
+
+      if (maxPages === 0) {
+        // maxPages = Math.ceil(TOTAL_COUNT / 20);
+      }
+
+      currentPage++;
+    }
+
     const posts = await getPosts();
     return [
       {
@@ -75,7 +127,34 @@ export default {
             post
           })
         }))
-      }
+      },
+      // Make an index route for every 5 blog posts
+      ...makePageRoutes({
+        items: listingsCamelCase,
+        pageSize: 5,
+        pageToken: 'page', // use page for the prefix, eg. blog/page/3
+        route: {
+          // Use this route as the base route
+          path: 'listings',
+          template: 'src/sites/listings'
+        },
+        decorate: (listings, i, totalPages) => ({
+          // For each page, supply the posts, page and totalPages
+          getData: () => ({
+            listings,
+            currentPage: i,
+            totalPages
+          })
+        })
+      }),
+      // Make the routes for each blog post
+      ...listingsCamelCase.map(listing => ({
+        path: `/listings/${listing.slug}`,
+        template: 'src/containers/Listing',
+        getData: () => ({
+          listing
+        })
+      }))
     ];
   },
   plugins: [

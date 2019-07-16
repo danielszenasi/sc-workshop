@@ -27,6 +27,19 @@ const GlobalStyle = createGlobalStyle`
   img {
     max-width: 100%;
   }
+
+  .pagination {
+    display: inline-block;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+  .pagination li {
+      display: inline-block;
+      padding: 5px;
+    margin: 5px;
+    border: solid black 1px;
+  }
 `;
 
 const Nav = styled.nav`
@@ -55,6 +68,7 @@ function App() {
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
         <Link to="/blog">Blog</Link>
+        <Link to="/listings">Listings</Link>
         <Link to="/dynamic">Dynamic</Link>
       </Nav>
       <Content>
