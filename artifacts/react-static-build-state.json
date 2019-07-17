@@ -1,0 +1,61 @@
+{
+  "prefetchRate": 5,
+  "maxThreads": null,
+  "disableRoutePrefixing": false,
+  "outputFileRate": 100,
+  "extensions": [
+    ".js",
+    ".jsx"
+  ],
+  "minLoadTime": 200,
+  "disablePreload": false,
+  "disableRuntime": false,
+  "preloadPollInterval": 300,
+  "productionSourceMaps": false,
+  "entry": "index.js",
+  "plugins": [
+    [
+      "/Users/danielszenasi/Projects/sc-workshop/node_modules/react-static-plugin-source-filesystem/node.api.js",
+      {
+        "location": "/Users/danielszenasi/Projects/sc-workshop/src/sites"
+      }
+    ],
+    "/Users/danielszenasi/Projects/sc-workshop/node_modules/react-static-plugin-reach-router/browser.api.js",
+    "/Users/danielszenasi/Projects/sc-workshop/node_modules/react-static-plugin-sitemap/dist/node.api.js",
+    "/Users/danielszenasi/Projects/sc-workshop"
+  ],
+  "paths": {
+    "ROOT": "/Users/danielszenasi/Projects/sc-workshop",
+    "SRC": "/Users/danielszenasi/Projects/sc-workshop/src",
+    "DIST": "/Users/danielszenasi/Projects/sc-workshop/dist",
+    "ASSETS": "/Users/danielszenasi/Projects/sc-workshop/dist",
+    "PLUGINS": "/Users/danielszenasi/Projects/sc-workshop/plugins",
+    "TEMP": "/Users/danielszenasi/Projects/sc-workshop/tmp",
+    "ARTIFACTS": "/Users/danielszenasi/Projects/sc-workshop/artifacts",
+    "PUBLIC": "/Users/danielszenasi/Projects/sc-workshop/public",
+    "NODE_MODULES": "/Users/danielszenasi/Projects/sc-workshop/node_modules",
+    "EXCLUDE_MODULES": "/Users/danielszenasi/Projects/sc-workshop/node_modules",
+    "PACKAGE": "/Users/danielszenasi/Projects/sc-workshop/package.json",
+    "HTML_TEMPLATE": "/Users/danielszenasi/Projects/sc-workshop/dist/index.html",
+    "STATIC_DATA": "/Users/danielszenasi/Projects/sc-workshop/dist/staticData"
+  },
+  "siteRoot": "",
+  "basePath": "",
+  "publicPath": "/",
+  "assetsPath": "",
+  "extractCssChunks": false,
+  "inlineCss": false,
+  "babelExcludes": [],
+  "devServer": {
+    "host": "localhost",
+    "port": 3000
+  },
+  "terser": {
+    "terserOptions": {
+      "mangle": {},
+      "parse": {},
+      "compress": {},
+      "output": {}
+    }
+  }
+}

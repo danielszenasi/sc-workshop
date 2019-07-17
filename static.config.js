@@ -85,12 +85,12 @@ export default {
     </Html>
   ),
   getRoutes: async () => {
-    let maxPages = 2;
+    let maxPages = 10;
     let currentPage = 1;
     let listingsCamelCase = [];
     while (currentPage <= maxPages + 1) {
       const params = {
-        apikey: process.env.RLS_API,
+        apikey: '314b36474e78364f',
         page: currentPage,
         limit: 20,
         order: 'date',
