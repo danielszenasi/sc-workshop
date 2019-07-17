@@ -62,12 +62,14 @@ export default function Listing() {
   return (
     <div>
       <Link to="/listings/">{'<'} Back</Link>
-      <ImageGallery
-        items={listing.photos.map(photo => ({
-          original: photo.PHOTO_URL,
-          thumbnail: photo.PHOTO_URL
-        }))}
-      />
+      {listing.photos && (
+        <ImageGallery
+          items={listing.photos.map(photo => ({
+            original: photo.PHOTO_URL,
+            thumbnail: photo.PHOTO_URL
+          }))}
+        />
+      )}
       <h2>address</h2>
       <div>{listing.address}</div>
 

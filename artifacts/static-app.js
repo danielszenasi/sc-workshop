@@ -1742,7 +1742,7 @@ function Listing() {
 
   return react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(components_Router__WEBPACK_IMPORTED_MODULE_6__[/* Link */ "a"], {
     to: "/listings/"
-  }, '<', " Back"), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(react_image_gallery__WEBPACK_IMPORTED_MODULE_7___default.a, {
+  }, '<', " Back"), listing.photos && react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(react_image_gallery__WEBPACK_IMPORTED_MODULE_7___default.a, {
     items: listing.photos.map(function (photo) {
       return {
         original: photo.PHOTO_URL,
@@ -2042,6 +2042,14 @@ var suggestions = [{
   label: 'Financial District'
 }, {
   label: 'Gramercy'
+}, {
+  label: 'Midtown South'
+}, {
+  label: 'Lenox Hill'
+}, {
+  label: 'Turtle Bay'
+}, {
+  label: 'Midtown West'
 }].map(function (suggestion) {
   return {
     value: suggestion.label,
@@ -2285,6 +2293,9 @@ var typeOfPropertyOptions = [{
 }, {
   value: 'House',
   label: 'House'
+}, {
+  value: 'Townhouse',
+  label: 'Townhouse'
 }];
 var listings_useStyles = Object(styles_["makeStyles"])(function (theme) {
   return {
@@ -2313,7 +2324,7 @@ function Listings() {
   var classes = listings_useStyles();
 
   var _useState = Object(external_react_["useState"])({
-    type: 'Coop',
+    type: 'Townhouse',
     neighborhood: [{
       label: 'Murray Hill',
       value: 'Murray Hill'

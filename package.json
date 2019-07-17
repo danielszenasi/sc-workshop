@@ -11,6 +11,7 @@
     "start": "react-static start",
     "stage": "react-static build --staging",
     "build": "react-static build",
+    "build:incremental": "react-static export --incremental",
     "analyze": "react-static build --analyze",
     "serve": "serve dist -p 3000"
   },

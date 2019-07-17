@@ -90,8 +90,11 @@ export default {
       <Body>{children}</Body>
     </Html>
   ),
-  getRoutes: async () => {
-    let maxPages = 50;
+  getRoutes: async ({ incremental }) => {
+    if (incremental) {
+      return buildIncremental();
+    }
+    let maxPages = 200;
     let currentPage = 1;
     let listingsCamelCase = [];
     while (currentPage <= maxPages + 1) {
@@ -123,37 +126,7 @@ export default {
       currentPage++;
     }
 
-    listingsCamelCase.forEach(listing => {
-      redis.sadd(listing.propertyType, listing.slug);
-      redis.sadd(listing.neighborhoods, listing.slug);
-      redis.zadd('bedrooms', listing.bedrooms, listing.slug);
-      redis.zadd('price', listing.price, listing.slug);
-
-      const photo =
-        listing.photos && listing.photos.length > 0 ? listing.photos[0].PHOTO_URL : null;
-
-      redis.hmset(
-        listing.slug,
-        'propertyType',
-        listing.propertyType,
-        'neighborhoods',
-        listing.neighborhoods,
-        'bedrooms',
-        listing.bedrooms,
-        'bathrooms',
-        listing.bathrooms,
-        'price',
-        listing.price,
-        'address',
-        listing.address,
-        'photo',
-        photo,
-        'latitude',
-        listing.latitude,
-        'longitude',
-        listing.longitude
-      );
-    });
+    addToRedis(listingsCamelCase);
 
     const posts = await getPosts();
     return [
@@ -210,3 +183,70 @@ export default {
     require.resolve('react-static-plugin-sitemap')
   ]
 };
+
+async function buildIncremental() {
+  const params = {
+    apikey: '314b36474e78364f',
+    page: currentPage,
+    limit: 20,
+    order: 'date',
+    sort: 'desc',
+    includeContacts: true,
+    status: `1`,
+    updated_since: '07/10/2019T12:00'
+  };
+  const query = querystring.stringify(params);
+  const response = await axios.get(`http://dataapi.realtymx.com/listings/?${query}`);
+
+  const { LISTINGS, TOTAL_COUNT } = response.data;
+
+  const listingsCamelCase = LISTINGS.map(l => _.mapKeys(l, (v, k) => _.camelCase(k))).map(li => ({
+    ...li,
+    slug: slugify(li.address)
+  }));
+
+  addToRedis(listingsCamelCase);
+
+  return [
+    ...listingsCamelCase.map(listing => ({
+      path: `/listings/${listing.slug}`,
+      template: 'src/containers/Listing',
+      getData: () => ({
+        listing
+      })
+    }))
+  ];
+}
+
+function addToRedis(listingsCamelCase) {
+  listingsCamelCase.forEach(listing => {
+    redis.sadd(listing.propertyType, listing.slug);
+    redis.sadd(listing.neighborhoods, listing.slug);
+    redis.zadd('bedrooms', listing.bedrooms, listing.slug);
+    redis.zadd('price', listing.price, listing.slug);
+
+    const photo = listing.photos && listing.photos.length > 0 ? listing.photos[0].PHOTO_URL : null;
+
+    redis.hmset(
+      listing.slug,
+      'propertyType',
+      listing.propertyType,
+      'neighborhoods',
+      listing.neighborhoods,
+      'bedrooms',
+      listing.bedrooms,
+      'bathrooms',
+      listing.bathrooms,
+      'price',
+      listing.price,
+      'address',
+      listing.address,
+      'photo',
+      photo,
+      'latitude',
+      listing.latitude,
+      'longitude',
+      listing.longitude
+    );
+  });
+}
