@@ -75,13 +75,17 @@ export default {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
+        <script
+          type="text/javascript"
+          src="https://identity.netlify.com/v1/netlify-identity-widget.js"
+        />
       </Head>
 
       <Body>{children}</Body>
     </Html>
   ),
   getRoutes: async () => {
-    let maxPages = 10;
+    let maxPages = 2;
     let currentPage = 1;
     let listingsCamelCase = [];
     while (currentPage <= maxPages + 1) {
