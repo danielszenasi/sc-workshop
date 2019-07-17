@@ -26,7 +26,11 @@ const useStyles = makeStyles({
 export default function ListingCard(props) {
   const classes = useStyles();
   const { listing } = props;
-  const photo = listing.photos && listing.photos.length > 0 ? listing.photos[0].PHOTO_URL : null;
+  const photo = listing.photo
+    ? listing.photo
+    : listing.photos && listing.photos.length > 0
+    ? listing.photos[0].PHOTO_URL
+    : null;
 
   return (
     <Card className={classes.card}>

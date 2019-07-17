@@ -11,6 +11,12 @@ const _ = require('lodash');
 const slugify = require('slugify');
 import querystring from 'query-string';
 import { makePageRoutes } from 'react-static/node';
+const Redis = require('ioredis');
+const redis = new Redis({
+  port: 11592, // Redis port
+  host: 'redis-11592.c24.us-east-mz-1.ec2.cloud.redislabs.com', // Redis host
+  password: process.env.REDIS_PASSWORD
+});
 
 function getPosts() {
   const items = [];
@@ -85,12 +91,12 @@ export default {
     </Html>
   ),
   getRoutes: async () => {
-    let maxPages = 10;
+    let maxPages = 50;
     let currentPage = 1;
     let listingsCamelCase = [];
     while (currentPage <= maxPages + 1) {
       const params = {
-        apikey: '314b36474e78364f',
+        apikey: process.env.RLS_API,
         page: currentPage,
         limit: 20,
         order: 'date',
@@ -116,6 +122,38 @@ export default {
 
       currentPage++;
     }
+
+    listingsCamelCase.forEach(listing => {
+      redis.sadd(listing.propertyType, listing.slug);
+      redis.sadd(listing.neighborhoods, listing.slug);
+      redis.zadd('bedrooms', listing.bedrooms, listing.slug);
+      redis.zadd('price', listing.price, listing.slug);
+
+      const photo =
+        listing.photos && listing.photos.length > 0 ? listing.photos[0].PHOTO_URL : null;
+
+      redis.hmset(
+        listing.slug,
+        'propertyType',
+        listing.propertyType,
+        'neighborhoods',
+        listing.neighborhoods,
+        'bedrooms',
+        listing.bedrooms,
+        'bathrooms',
+        listing.bathrooms,
+        'price',
+        listing.price,
+        'address',
+        listing.address,
+        'photo',
+        photo,
+        'latitude',
+        listing.latitude,
+        'longitude',
+        listing.longitude
+      );
+    });
 
     const posts = await getPosts();
     return [

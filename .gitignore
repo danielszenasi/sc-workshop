@@ -3,6 +3,7 @@
 
 /functions/slots/node_modules
 /functions/appointments/node_modules
+/functions/listings/node_modules
 
 
 # testing
