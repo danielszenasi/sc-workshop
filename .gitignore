@@ -1,6 +1,10 @@
 # dependencies
 /node_modules
 
+/functions/slots/node_modules
+/functions/appointments/node_modules
+
+
 # testing
 /coverage
 

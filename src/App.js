@@ -40,6 +40,12 @@ const GlobalStyle = createGlobalStyle`
     margin: 5px;
     border: solid black 1px;
   }
+
+  .netlify-identity-menu {
+    display: flex;
+    margin: 0;
+    list-style-type: none;
+  }
 `;
 
 const Nav = styled.nav`
@@ -57,8 +63,8 @@ const Content = styled.div`
   padding: 1rem;
 `;
 
-// Any routes that start with 'dynamic' will be treated as non-static routes
-addPrefetchExcludes(['dynamic']);
+// Any routes that start with 'appointmens' will be treated as non-static routes
+addPrefetchExcludes(['appointments']);
 
 function App() {
   return (
@@ -69,12 +75,13 @@ function App() {
         <Link to="/about">About</Link>
         <Link to="/blog">Blog</Link>
         <Link to="/listings">Listings</Link>
-        <Link to="/dynamic">Dynamic</Link>
+        <Link to="/appointments">Appointments</Link>
+        <div data-netlify-identity-menu />
       </Nav>
       <Content>
         <React.Suspense fallback={<em>Loading...</em>}>
           <Router>
-            <Dynamic path="dynamic" />
+            <Dynamic path="appointments" />
             <Routes path="*" />
           </Router>
         </React.Suspense>
